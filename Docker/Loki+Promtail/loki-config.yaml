@@ -2,51 +2,43 @@ auth_enabled: false
 
 server:
   http_listen_port: 3100
-  grpc_listen_port: 9096
 
 common:
-  instance_addr: 127.0.0.1
-  path_prefix: /tmp/loki
-  replication_factor: 1
   ring:
+    instance_addr: 127.0.0.1
     kvstore:
       store: inmemory
-
-query_range:
-  results_cache:
-    cache:
-      embedded_cache:
-        enabled: true
-        max_size_mb: 100
+  replication_factor: 1
+  path_prefix: /loki
 
 schema_config:
   configs:
-    - from: 2020-10-24
-      store: tsdb
-      object_store: filesystem
-      schema: v13
-      index:
-        prefix: index_
-        period: 24h
+  - from: "2023-01-05"
+    index:
+      period: 24h
+      prefix: index_
+    object_store: filesystem
+    schema: v13
+    store: tsdb
+
+storage_config:
+  tsdb_shipper:
+      active_index_directory: /loki/data/tsdb-index
+      cache_location: /loki/data/tsdb-cache
+
+query_scheduler:
+  max_outstanding_requests_per_tenant: 32768
+
+querier:
+  max_concurrent: 16
 
 compactor:
-  working_directory: data/retention
+  working_directory: /data/retention
   compaction_interval: 10m
   retention_enabled: true
   retention_delete_delay: 2h
   retention_delete_worker_count: 150
   delete_request_store: filesystem
 
-storage_config:
-    tsdb_shipper:
-        active_index_directory: data/index
-        cache_location: data/index_cache
-
 limits_config:
-  retention_period: 744h
-
-ruler:
-  alertmanager_url: http://localhost:9093
-
-analytics:
-  reporting_enabled: false
+  retention_period: 672h
