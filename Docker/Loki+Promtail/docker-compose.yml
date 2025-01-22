@@ -2,10 +2,10 @@ services:
   loki:
     image: grafana/loki
     container_name: loki
-    user: "root"
     volumes:
       - ./loki-config.yaml:/mnt/config/loki-config.yaml
       - loki_data:/loki/data
+    user: "root"
     ports:
       - "3100:3100"
     command: 
