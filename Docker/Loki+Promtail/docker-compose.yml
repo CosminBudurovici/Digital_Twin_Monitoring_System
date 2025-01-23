@@ -4,7 +4,7 @@ services:
     container_name: loki
     volumes:
       - ./loki-config.yaml:/mnt/config/loki-config.yaml
-      - loki_data:/loki/data
+      - loki_data:/loki
     user: "root"
     ports:
       - "3100:3100"
